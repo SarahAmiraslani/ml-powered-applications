@@ -44,8 +44,7 @@ def get_features_from_text_array(input_array):
     """
     text_ser = pd.DataFrame(input_array, columns=["full_text"])
     text_ser = add_v2_text_features(text_ser.copy())
-    features = text_ser[FEATURE_ARR].astype(float)
-    return features
+    return text_ser[FEATURE_ARR].astype(float)
 
 
 def get_model_probabilities_for_input_texts(text_array):
@@ -66,8 +65,7 @@ def get_question_score_from_input(text):
     :return: estimated probability of question receiving a high score
     """
     preds = get_model_probabilities_for_input_texts([text])
-    positive_proba = preds[0][1]
-    return positive_proba
+    return preds[0][1]
 
 
 def get_recommendation_and_prediction_from_text(input_text, num_feats=10):
@@ -88,7 +86,7 @@ def get_recommendation_and_prediction_from_text(input_text, num_feats=10):
     print("explaining done")
     parsed_exps = parse_explanations(exp.as_list())
     recs = get_recommendation_string_from_parsed_exps(parsed_exps)
-    output_str = """
+    return """
     Current score (0 is worst, 1 is best):
      <br/>
      %s
@@ -103,4 +101,3 @@ def get_recommendation_and_prediction_from_text(input_text, num_feats=10):
         pos_score,
         recs,
     )
-    return output_str

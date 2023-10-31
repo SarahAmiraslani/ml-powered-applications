@@ -86,12 +86,11 @@ def get_explainer():
     data_path = Path("../data/writers_with_features.csv")
     df = pd.read_csv(curr_path / data_path)
     train_df, test_df = get_split_by_author(df, test_size=0.2, random_state=40)
-    explainer = LimeTabularExplainer(
+    return LimeTabularExplainer(
         train_df[FEATURE_ARR].values,
         feature_names=FEATURE_ARR,
         class_names=["low", "high"],
     )
-    return explainer
 
 
 EXPLAINER = get_explainer()
@@ -105,9 +104,7 @@ def simplify_order_sign(order_sign):
     """
     if order_sign in ["<=", "<"]:
         return "<"
-    if order_sign in [">=", ">"]:
-        return ">"
-    return order_sign
+    return ">" if order_sign in [">=", ">"] else order_sign
 
 
 def get_recommended_modification(simple_order, impact):
@@ -122,12 +119,10 @@ def get_recommended_modification(simple_order, impact):
 
     if bigger_than_threshold and has_positive_impact:
         return "No need to decrease"
-    if not bigger_than_threshold and not has_positive_impact:
+    if bigger_than_threshold or has_positive_impact:
+        return "Decrease" if bigger_than_threshold else "No need to increase"
+    else:
         return "Increase"
-    if bigger_than_threshold and not has_positive_impact:
-        return "Decrease"
-    if not bigger_than_threshold and has_positive_impact:
-        return "No need to increase"
 
 
 def parse_explanations(exp_list):
@@ -169,18 +164,10 @@ def get_recommendation_string_from_parsed_exps(exp_list):
     """
     recommendations = []
     for i, feature_exp in enumerate(exp_list):
-        recommendation = "%s %s" % (
-            feature_exp["recommendation"],
-            feature_exp["feature_display_name"],
-        )
+        recommendation = f'{feature_exp["recommendation"]} {feature_exp["feature_display_name"]}'
         font_color = "green"
         if feature_exp["recommendation"] in ["Increase", "Decrease"]:
             font_color = "red"
-        rec_str = """<font color="%s">%s) %s</font>""" % (
-            font_color,
-            i + 1,
-            recommendation,
-        )
+        rec_str = f"""<font color="{font_color}">{i + 1}) {recommendation}</font>"""
         recommendations.append(rec_str)
-    rec_string = "<br/>".join(recommendations)
-    return rec_string
+    return "<br/>".join(recommendations)

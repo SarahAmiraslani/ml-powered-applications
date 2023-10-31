@@ -87,16 +87,11 @@ def get_word_stats(df):
     global SPACY_MODEL
     df["spacy_text"] = df["full_text"].progress_apply(lambda x: SPACY_MODEL(x))
 
-    df["num_words"] = (
-        df["spacy_text"].apply(lambda x: 100 * len(x)) / df["num_chars"]
-    )
+    df["num_words"] = 100 * len(x) / df["num_chars"]
     df["num_diff_words"] = df["spacy_text"].apply(lambda x: len(set(x)))
     df["avg_word_len"] = df["spacy_text"].apply(lambda x: get_avg_wd_len(x))
     df["num_stops"] = (
-        df["spacy_text"].apply(
-            lambda x: 100 * len([stop for stop in x if stop.is_stop])
-        )
-        / df["num_chars"]
+        100 * len([stop for stop in x if stop.is_stop]) / df["num_chars"]
     )
 
     df = count_each_pos(df.copy())
@@ -183,8 +178,7 @@ def get_question_score_from_input(text):
     :return: estimated probability of question receiving a high score
     """
     preds = get_model_probabilities_for_input_texts([text])
-    positive_proba = preds[0][1]
-    return positive_proba
+    return preds[0][1]
 
 
 def get_pos_score_from_text(input_text):
@@ -194,7 +188,7 @@ def get_pos_score_from_text(input_text):
     :return: estimated probability of question receiving a high score
     """
     positive_proba = get_question_score_from_input(input_text)
-    output_str = (
+    return (
         """
         Question score (0 is worst, 1 is best): 
         <br/>
@@ -202,5 +196,3 @@ def get_pos_score_from_text(input_text):
     """
         % positive_proba
     )
-
-    return output_str

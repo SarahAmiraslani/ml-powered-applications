@@ -66,8 +66,8 @@ def get_data_from_dump(site_name, load_existing=True):
     :return: pandas DataFrame of the parsed xml
     """
     data_path = Path("data")
-    dump_name = "%s.stackexchange.com/Posts.xml" % site_name
-    extracted_name = "%s.csv" % site_name
+    dump_name = f"{site_name}.stackexchange.com/Posts.xml"
+    extracted_name = f"{site_name}.csv"
     dump_path = data_path / dump_name
     extracted_path = data_path / extracted_name
 

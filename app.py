@@ -77,15 +77,14 @@ def handle_text_request(request, template_name):
     :param template_name: name of the requested template (e.g. v2.html)
     :return: Render an input form or results depending on request type
     """
-    if request.method == "POST":
-        question = request.form.get("question")
-        model_name = get_model_from_template(template_name)
-        suggestions = retrieve_recommendations_for_model(question, model_name)
-        payload = {
-            "input": question,
-            "suggestions": suggestions,
-            "model_name": model_name,
-        }
-        return render_template("results.html", ml_result=payload)
-    else:
+    if request.method != "POST":
         return render_template(template_name)
+    question = request.form.get("question")
+    model_name = get_model_from_template(template_name)
+    suggestions = retrieve_recommendations_for_model(question, model_name)
+    payload = {
+        "input": question,
+        "suggestions": suggestions,
+        "model_name": model_name,
+    }
+    return render_template("results.html", ml_result=payload)
