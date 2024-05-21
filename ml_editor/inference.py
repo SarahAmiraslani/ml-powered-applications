@@ -14,11 +14,7 @@ REQUIRED_FEATURES = [
 
 
 def find_absent_features(data):
-    missing = []
-    for feat in REQUIRED_FEATURES:
-        if feat not in data.keys():
-            missing.append(feat)
-    return missing
+    return [feat for feat in REQUIRED_FEATURES if feat not in data.keys()]
 
 
 def check_feature_types(data):
@@ -29,11 +25,11 @@ def check_feature_types(data):
         "question_mark_full": bool,
         "norm_text_len": float,
     }
-    mistypes = []
-    for field, data_type in types:
-        if not isinstance(data[field], data_type):
-            mistypes.append((data[field], data_type))
-    return mistypes
+    return [
+        (data[field], data_type)
+        for field, data_type in types
+        if not isinstance(data[field], data_type)
+    ]
 
 
 def run_heuristic(question_len):
@@ -54,7 +50,7 @@ def run_model(question_data):
 def validate_and_handle_request(question_data):
     missing = find_absent_features(question_data)
     if len(missing) > 0:
-        raise ValueError("Missing feature(s) %s" % missing)
+        raise ValueError(f"Missing feature(s) {missing}")
 
     wrong_types = check_feature_types(question_data)
     if len(wrong_types) > 0:
@@ -62,14 +58,14 @@ def validate_and_handle_request(question_data):
         if "text_len" in question_data.keys():
             if isinstance(question_data["text_len"], float):
                 return run_heuristic(question_data["text_len"])
-        raise ValueError("Incorrect type(s) %s" % wrong_types)
+        raise ValueError(f"Incorrect type(s) {wrong_types}")
 
     return run_model(question_data)
 
 
 def verify_output_type_and_range(output):
     if not isinstance(output, float):
-        raise ValueError("Wrong output type %s, %s" % (output, type(output)))
+        raise ValueError(f"Wrong output type {output}, {type(output)}")
     if not 0 < output < 1:
         raise ValueError("Output out of range %s, %s" % output)
 

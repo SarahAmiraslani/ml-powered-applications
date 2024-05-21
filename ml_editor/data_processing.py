@@ -58,8 +58,7 @@ def get_vectorized_series(text_series, vectorizer):
     :return: array of vectorized features
     """
     vectors = vectorizer.transform(text_series)
-    vectorized_series = [vectors[i] for i in range(vectors.shape[0])]
-    return vectorized_series
+    return [vectors[i] for i in range(vectors.shape[0])]
 
 
 def add_text_features_to_df(df):

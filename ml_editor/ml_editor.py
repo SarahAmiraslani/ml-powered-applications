@@ -42,8 +42,7 @@ def preprocess_input(text):
     :return: Text ready to be fed to analysis, by having sentences and words tokenized
     """
     sentences = nltk.sent_tokenize(text)
-    tokens = [nltk.word_tokenize(sentence) for sentence in sentences]
-    return tokens
+    return [nltk.word_tokenize(sentence) for sentence in sentences]
 
 
 def compute_flesch_reading_ease(total_syllables, total_words, total_sentences):
@@ -145,11 +144,9 @@ def count_sentence_syllables(tokens):
     # Our tokenizer leaves punctuation as a separate word, so we filter for it here
     punctuation = ".,!?/"
     return sum(
-        [
-            count_word_syllables(word)
-            for word in tokens
-            if word not in punctuation
-        ]
+        count_word_syllables(word)
+        for word in tokens
+        if word not in punctuation
     )
 
 
@@ -159,9 +156,7 @@ def count_total_syllables(sentence_list):
     :param sentence_list:  a list of sentences, each being a list of words
     :return: the number of syllables in the sentences
     """
-    return sum(
-        [count_sentence_syllables(sentence) for sentence in sentence_list]
-    )
+    return sum(count_sentence_syllables(sentence) for sentence in sentence_list)
 
 
 def count_words_per_sentence(sentence_tokens):
@@ -180,9 +175,7 @@ def count_total_words(sentence_list):
     :param sentence_list: a list of sentences, each being a list of words
     :return: the number of words in the sentences
     """
-    return sum(
-        [count_words_per_sentence(sentence) for sentence in sentence_list]
-    )
+    return sum(count_words_per_sentence(sentence) for sentence in sentence_list)
 
 
 def get_suggestions(sentence_list):
@@ -215,11 +208,7 @@ def get_suggestions(sentence_list):
         )
     )
     result_str = ""
-    adverb_usage = "Adverb usage: %s told/said, %s but/and, %s wh adverbs" % (
-        told_said_usage,
-        but_and_usage,
-        wh_adverbs_usage,
-    )
+    adverb_usage = f"Adverb usage: {told_said_usage} told/said, {but_and_usage} but/and, {wh_adverbs_usage} wh adverbs"
     result_str += adverb_usage
     average_word_length = compute_total_average_word_length(sentence_list)
     unique_words_fraction = compute_total_unique_words_fraction(sentence_list)
@@ -268,8 +257,7 @@ def get_recommendations_from_input(txt):
     """
     processed = clean_input(txt)
     tokenized_sentences = preprocess_input(processed)
-    suggestions = get_suggestions(tokenized_sentences)
-    return suggestions
+    return get_suggestions(tokenized_sentences)
 
 
 if __name__ == "__main__":

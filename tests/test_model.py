@@ -49,15 +49,13 @@ def df_with_features():
 @pytest.fixture
 def trained_v1_model():
     model_path = Path(CURR_PATH / MODEL_PATH)
-    clf = joblib.load(model_path)
-    return clf
+    return joblib.load(model_path)
 
 
 @pytest.fixture
 def trained_v1_vectorizer():
     vectorizer_path = Path(CURR_PATH / VECTORIZER_PATH)
-    vectorizer = joblib.load(vectorizer_path)
-    return vectorizer
+    return joblib.load(vectorizer_path)
 
 
 def test_model_prediction_dimensions(

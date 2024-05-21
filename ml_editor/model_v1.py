@@ -49,5 +49,4 @@ def get_model_predictions_for_input_texts(text_array):
     :return: array of classes
     """
     probs = get_model_probabilities_for_input_texts(text_array)
-    predicted_classes = probs[:, 0] < probs[:, 1]
-    return predicted_classes
+    return probs[:, 0] < probs[:, 1]

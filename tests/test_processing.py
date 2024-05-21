@@ -55,7 +55,7 @@ def test_author_split_no_leakage():
     train, test = get_split_by_author(df, test_size=0.3)
     train_owners = set(train["OwnerUserId"].values)
     test_owners = set(test["OwnerUserId"].values)
-    assert len(train_owners.intersection(test_owners)) == 0
+    assert not train_owners.intersection(test_owners)
 
 
 @pytest.mark.filterwarnings("ignore::RuntimeWarning")
